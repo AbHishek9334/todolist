@@ -1,9 +1,24 @@
+import { useDispatch, useSelector } from "react-redux"
 import Todo from "../Todo/Todo"
-import TodoContext from "../../context/TodoContext"
+ 
 import { useContext } from "react"
+import { todoFinished,deleteTodo,editTodo } from "../../actions/todoAction"
+ 
 
-function TodoList(){
-    const {list,setList}=useContext(TodoContext)
+function TodoList({editTodo,deleteTodo,todoFinished}){
+   
+    const list=useSelector((state)=>state.todo)
+     
+   
+    function onFinished(todo,isFinished){
+         todoFinished(todo,isFinished)
+    }
+    function onDelete(todo){
+        deleteTodo(todo)
+    }
+    function onEdit(todo,todoText){
+         editTodo(todo,todoText)
+    }
     
     return(
       <div>
@@ -12,28 +27,15 @@ function TodoList(){
                                                 id={todo.id}
                                                  isFinished={todo.finished} 
                                                  todoData={todo.todoData}
-                                                 changeFinished={(isFinished)=>{
-                                                    const updatedList=list.map((t)=>{
-                                                        if(t.id==todo.id){
-                                                            todo.finished=isFinished
-                                                        }
-                                                        return t
-                                                    })
-                                                    setList(updatedList)
-                                                 }}
-                                                 onDelete={()=>{
-                                                    const updateList=list.filter((t)=>t.id!=todo.id)
-                                                    setList(updateList)
-                                                 }}
-                                                 onEdit={(todoText)=>{
-                                                    const updateList=list.map((t)=>{
-                                                        if(t.id==todo.id){
-                                                            todo.todoData=todoText
-                                                        }
-                                                        return t
-                                                    })
-                                                    setList(updateList)
-                                                 }}
+                                                 changeFinished={(isFinished)=>
+                                                    onFinished(todo,isFinished)
+                                                 }
+                                                 onDelete={()=>
+                                                     onDelete(todo)
+                                                 }
+                                                 onEdit={(todoText)=>
+                                                     onEdit(todo,todoText)
+                                                 }
                                                  
                                                  />)}
       </div>
